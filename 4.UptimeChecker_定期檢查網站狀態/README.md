@@ -2,8 +2,6 @@
 
 # 4.UptimeChecker - 定期檢查網站狀態
 
-[Imgur](https://imgur.com/6dpnstS)
-
 ### 程式碼
 ```javascript=
 function main(){
@@ -32,3 +30,6 @@ function sendNotify(token, message) {
   });
 }
 ```
+
+### 通知 Preview
+![Imgur](https://i.imgur.com/6dpnstS.png)
