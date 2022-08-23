@@ -1,7 +1,8 @@
 function main(){
   //sheetId可以從網址複製 ->https://docs.google.com/spreadsheets/d/{sheet_id}/
-  const sheetId = '{sheet_id}';
-  const token = '{line_notify_token}';
+  const sheetId = '';
+  const token = '';
+  const notifyDays = 7;
 
   const spreadSheet = SpreadsheetApp.openById(sheetId);
   const sheet = spreadSheet.getSheets()[0];
@@ -10,13 +11,22 @@ function main(){
   const now = new Date();
   let message = '';
   data.forEach(item => {
-    if(item[0]===now.getMonth()+1 && item[1]===now.getDate()){
-      message += '\n' + item[2];
+    let birthday = new Date();
+    birthday.setMonth(item[0]-1);
+    birthday.setDate(item[1]);
+    if(now > birthday){
+      birthday.setFullYear(birthday.getFullYear()+1);
+    }
+
+    let check_date = new Date();
+    check_date.setDate(now.getDate() + notifyDays);
+
+    if(check_date >= birthday){
+      message += '\n' + item[0] + '/' + item[1] + ' - ' + item[2];
     }
   });
   
   if(message !== ''){
-    message = now.getMonth()+1 + '/' + now.getDate() + message;
     doPost(token, message);
   }
 }

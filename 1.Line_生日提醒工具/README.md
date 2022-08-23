@@ -3,15 +3,15 @@
 # Line生日提醒工具
 
 ## 前言
-我有一個大學班級的Line群組，
-每當有同學生日時，我們老師就會傳訊息祝他生日快樂，
-而且持續到現在整整七年都還保持著這個習慣，真的是太有毅力了！
-我們有時候還會開玩笑懷疑老師有寫機器人來自動發生日快樂訊息XD
+我有一個大學班級的Line群組，  
+每當有同學生日時，我們老師就會傳訊息祝他生日快樂，  
+而且持續到現在整整七年都還保持著這個習慣，真的是太有毅力了！  
+我們有時候還會開玩笑懷疑老師有寫機器人來自動發生日快樂訊息XD  
 
 ![](https://i.imgur.com/VRpRFRi.png)
 
-現在很多人的Facebook會把生日顯示關掉，因此更有可能錯過這些日子。
-所以我們來做個免費、不需架設伺服器的生日提醒系統吧！
+現在很多人的Facebook會把生日顯示關掉，因此更有可能錯過這些日子。  
+所以我們來做個免費、不需架設伺服器的生日提醒系統吧！  
 
 ## Line 生日提醒工具
 ### 使用工具
@@ -22,7 +22,7 @@
 ### 運作方式
 - 排程設定每天固定時間執行一次 Script
 - 讀取 Google Sheets 取得生日資料
-- 若當天有事件發生，呼叫 Line Notify 傳送提醒
+- 若近 7 天有人生日就呼叫 Line Notify 傳送提醒 (可自行調整天數)
 
 ### 設定步驟
 1. [Line Notify](https://notify-bot.line.me/my/) 設定通知群組、取得專用Token
@@ -35,8 +35,9 @@
 ```javascript=
 function main(){
   //sheetId可以從網址複製 ->https://docs.google.com/spreadsheets/d/{sheet_id}/
-  const sheetId = '{sheet_id}';
-  const token = '{line_notify_token}';
+  const sheetId = '';
+  const token = '';
+  const notifyDays = 7;
 
   const spreadSheet = SpreadsheetApp.openById(sheetId);
   const sheet = spreadSheet.getSheets()[0];
@@ -45,13 +46,22 @@ function main(){
   const now = new Date();
   let message = '';
   data.forEach(item => {
-    if(item[0]===now.getMonth()+1 && item[1]===now.getDate()){
-      message += '\n' + item[2];
+    let birthday = new Date();
+    birthday.setMonth(item[0]-1);
+    birthday.setDate(item[1]);
+    if(now > birthday){
+      birthday.setFullYear(birthday.getFullYear()+1);
+    }
+
+    let check_date = new Date();
+    check_date.setDate(now.getDate() + notifyDays);
+
+    if(check_date >= birthday){
+      message += '\n' + item[0] + '/' + item[1] + ' - ' + item[2];
     }
   });
   
   if(message !== ''){
-    message = now.getMonth()+1 + '/' + now.getDate() + message;
     doPost(token, message);
   }
 }
