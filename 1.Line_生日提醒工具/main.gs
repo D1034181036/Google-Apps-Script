@@ -12,8 +12,8 @@ function main(){
   let message = '';
   data.forEach(item => {
     let birthday = new Date();
-    birthday.setMonth(item[0]-1);
     birthday.setDate(item[1]);
+    birthday.setMonth(item[0]-1);
     if(now > birthday){
       birthday.setFullYear(birthday.getFullYear()+1);
     }
