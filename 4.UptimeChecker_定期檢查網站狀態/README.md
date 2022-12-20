@@ -2,6 +2,9 @@
 
 # UptimeChecker - 定期檢查網站狀態
 
+## 通知 Preview
+![Imgur](https://i.imgur.com/Qv5d7X1.png)
+
 ## 程式碼
 ```javascript=
 function main(){
@@ -9,19 +12,19 @@ function main(){
   const url = '';
   
   try{
-    response = UrlFetchApp.fetch(url);
+    response = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
     if(response.getResponseCode() != 200){
-      sendNotify(lineToken, "\nGet Status Error");
+      sendNotify(lineToken, `\nGet HTTP Status: ${response.getResponseCode()}`);
     }
   }catch(error){
     sendNotify(lineToken, "\nGet Status Error");
   }
 }
 
-function sendNotify(token, message) {
+function sendNotify(lineToken, message) {
   UrlFetchApp.fetch('https://notify-api.line.me/api/notify', {
     'headers': {
-      'Authorization': 'Bearer ' + token,
+      'Authorization': `Bearer ${lineToken}`
     },
     'method': 'post',
     'payload': {
@@ -30,6 +33,3 @@ function sendNotify(token, message) {
   });
 }
 ```
-
-## 通知 Preview
-![Imgur](https://i.imgur.com/6dpnstS.png)

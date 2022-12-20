@@ -56,8 +56,8 @@ function basic(){
 ```javascript=
 function main(){
   const videoId = "aST49yvU3x0";
+  const sheetId = "";
   const titleFormat = "有 {views} 個人點進來看我把筆放到貓的左手上";
-  const sheetId = "{sheet_id}";
 
   const response = YouTube.Videos.list("snippet, statistics", { id: videoId });
   const videoDetails = response['items'][0];

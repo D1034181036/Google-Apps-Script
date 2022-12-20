@@ -1,8 +1,7 @@
 function main(){
-  //sheetId可以從網址複製 ->https://docs.google.com/spreadsheets/d/{sheet_id}/
   const sheetId = '';
-  const token = '';
-  const notifyDays = 7;
+  const lineToken = '';
+  const notifyDays = 2;
 
   const spreadSheet = SpreadsheetApp.openById(sheetId);
   const sheet = spreadSheet.getSheets()[0];
@@ -11,9 +10,7 @@ function main(){
   const now = new Date();
   let message = '';
   data.forEach(item => {
-    let birthday = new Date();
-    birthday.setDate(item[1]);
-    birthday.setMonth(item[0]-1);
+    let birthday = new Date(now.getFullYear(), item[0]-1, item[1], 23, 59, 59);
     if(now > birthday){
       birthday.setFullYear(birthday.getFullYear()+1);
     }
@@ -27,18 +24,18 @@ function main(){
   });
   
   if(message !== ''){
-    doPost(token, message);
+    sendNotify(lineToken, message);
   }
 }
 
-function doPost(token, message) {
+function sendNotify(lineToken, content){
   UrlFetchApp.fetch('https://notify-api.line.me/api/notify', {
     'headers': {
-      'Authorization': 'Bearer ' + token,
+      'Authorization': `Bearer ${lineToken}`
     },
     'method': 'post',
     'payload': {
-      'message': message
+      'message': content
     }
   });
 }
